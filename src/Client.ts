@@ -43,6 +43,8 @@ export interface GenericClient {
 		body: BareBodyInit,
 		protocol: BareHTTPProtocol,
 		host: string,
+		proxyIp: any,
+		proxyPort: any,
 		port: string | number,
 		path: string,
 		cache: BareCache | undefined,

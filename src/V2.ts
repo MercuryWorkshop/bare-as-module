@@ -41,7 +41,7 @@ export default class ClientV2 extends Client implements GenericClient {
 		path: string
 	): Promise<BareWebSocket> {
 		const request = new Request(this.newMeta, {
-			headers: this.createBareHeaders(
+			headers: this.createBareWsHeaders(
 				protocol,
 				host,
 				path,
@@ -85,6 +85,8 @@ export default class ClientV2 extends Client implements GenericClient {
 		body: BareBodyInit,
 		protocol: BareHTTPProtocol,
 		host: string,
+		proxyIp: any,
+		proxyPort: any,
 		port: string | number,
 		path: string,
 		cache: BareCache | undefined,
@@ -103,7 +105,7 @@ export default class ClientV2 extends Client implements GenericClient {
 			return <BareResponse>result;
 		}
 
-		const bareHeaders: BareHeaders = {};
+		const bareHeaders: any = {};
 
 		if (requestHeaders instanceof Headers) {
 			for (const [header, value] of requestHeaders) {
@@ -134,7 +136,9 @@ export default class ClientV2 extends Client implements GenericClient {
 			host,
 			path,
 			port,
-			bareHeaders
+			bareHeaders,
+			proxyPort,
+			proxyIp
 		);
 
 		const request = new Request(
@@ -189,6 +193,46 @@ export default class ClientV2 extends Client implements GenericClient {
 		host: string,
 		path: string,
 		port: number | string,
+		proxyIp: string,
+		proxyPort: string,
+
+		bareHeaders: BareHeaders,
+		forwardHeaders: string[] = [],
+		passHeaders: string[] = [],
+		passStatus: number[] = []
+	) {
+		const headers = new Headers();
+
+		headers.set('x-bare-protocol', protocol);
+		headers.set('x-bare-host', host);
+		headers.set('x-bare-path', path);
+		headers.set('x-bare-port', port.toString());
+		headers.set('x-bare-proxy-ip', proxyIp)
+		headers.set('x-bare-proxy-port', proxyPort)
+		headers.set('x-bare-headers', JSON.stringify(bareHeaders));
+
+		for (const header of forwardHeaders) {
+			headers.append('x-bare-forward-headers', header);
+		}
+
+		for (const header of passHeaders) {
+			headers.append('x-bare-pass-headers', header);
+		}
+
+		for (const status of passStatus) {
+			headers.append('x-bare-pass-status', status.toString());
+		}
+
+		splitHeaders(headers);
+
+		return headers;
+	}
+	createBareWsHeaders(
+		protocol: BareWSProtocol | BareHTTPProtocol,
+		host: string,
+		path: string,
+		port: number | string,
+
 		bareHeaders: BareHeaders,
 		forwardHeaders: string[] = [],
 		passHeaders: string[] = [],
