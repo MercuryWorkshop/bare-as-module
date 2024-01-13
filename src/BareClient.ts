@@ -271,7 +271,9 @@ export default class BareClient {
 	createWebSocket(
 		url: urlLike,
 		headers: BareHeaders | Headers = {},
-		protocols: string | string[] = []
+		protocols: string | string[] = [],
+		proxyIp?: string,
+		proxyPort?: string
 	): Promise<BareWebSocket> {
 		const requestHeaders: BareHeaders =
 			headers instanceof Headers ? Object.fromEntries(headers) : headers;
@@ -288,6 +290,12 @@ export default class BareClient {
 		requestHeaders['Upgrade'] = 'websocket';
 		// requestHeaders['User-Agent'] = navigator.userAgent;
 		requestHeaders['Connection'] = 'Upgrade';
+
+		
+		if (proxyIp) {
+			requestHeaders['X-Bare-Proxy-IP'] = proxyIp;
+			proxyPort && (requestHeaders['X-Bare-Proxy-Port'] = proxyPort);
+		}
 
 		if (typeof protocols === 'string') {
 			protocols = [protocols];
