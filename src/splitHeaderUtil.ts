@@ -4,7 +4,7 @@ const MAX_HEADER_VALUE = 3072;
 
 /**
  *
- * Splits headers according to spec
+ * Splits headerss according to spec
  * @param headers
  * @returns Split headers
  */
