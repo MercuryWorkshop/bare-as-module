@@ -82,6 +82,8 @@ export type BareFetchInit = {
 	cache?: BareCache;
 	redirect?: 'follow' | 'manual' | 'error' | string;
 	signal?: AbortSignal;
+	proxyIp?: string;
+	proxyPort?: string;
 };
 
 export type BareMaintainer = {
@@ -225,6 +227,8 @@ export default class BareClient {
 		body: BareBodyInit,
 		protocol: BareHTTPProtocol,
 		host: string,
+		proxyIp: string | undefined,
+		proxyPort: string | undefined,
 		port: string | number,
 		path: string,
 		cache: BareCache | undefined,
@@ -238,6 +242,8 @@ export default class BareClient {
 			body,
 			protocol,
 			host,
+			proxyIp,
+			proxyPort,
 			port,
 			path,
 			cache,
@@ -373,6 +379,8 @@ export default class BareClient {
 					body,
 					url.protocol,
 					url.hostname,
+					init.proxyIp,
+					init.proxyPort,
 					resolvePort(url),
 					url.pathname + url.search,
 					cache,

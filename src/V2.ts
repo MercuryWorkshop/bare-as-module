@@ -85,8 +85,8 @@ export default class ClientV2 extends Client implements GenericClient {
 		body: BareBodyInit,
 		protocol: BareHTTPProtocol,
 		host: string,
-		proxyIp: any,
-		proxyPort: any,
+		proxyIp: string,
+		proxyPort: string ,
 		port: string | number,
 		path: string,
 		cache: BareCache | undefined,
@@ -136,9 +136,9 @@ export default class ClientV2 extends Client implements GenericClient {
 			host,
 			path,
 			port,
-			bareHeaders,
 			proxyPort,
-			proxyIp
+			proxyIp,
+			bareHeaders,
 		);
 
 		const request = new Request(
@@ -193,8 +193,8 @@ export default class ClientV2 extends Client implements GenericClient {
 		host: string,
 		path: string,
 		port: number | string,
-		proxyIp: string,
-		proxyPort: string,
+		proxyIp: string | undefined,
+		proxyPort: string | undefined,
 
 		bareHeaders: BareHeaders,
 		forwardHeaders: string[] = [],
@@ -207,8 +207,10 @@ export default class ClientV2 extends Client implements GenericClient {
 		headers.set('x-bare-host', host);
 		headers.set('x-bare-path', path);
 		headers.set('x-bare-port', port.toString());
-		headers.set('x-bare-proxy-ip', proxyIp)
-		headers.set('x-bare-proxy-port', proxyPort)
+		if (proxyIp) {
+			headers.set('x-bare-proxy-ip', proxyIp)
+			proxyPort && headers.set('x-bare-proxy-port', `${proxyPort}`)	
+		}
 		headers.set('x-bare-headers', JSON.stringify(bareHeaders));
 
 		for (const header of forwardHeaders) {
