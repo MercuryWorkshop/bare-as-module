@@ -136,8 +136,8 @@ export default class ClientV2 extends Client implements GenericClient {
 			host,
 			path,
 			port,
-			proxyPort,
 			proxyIp,
+			proxyPort,
 			bareHeaders,
 		);
 
